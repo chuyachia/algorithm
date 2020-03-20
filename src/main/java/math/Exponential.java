@@ -1,3 +1,5 @@
+package math;
+
 public class Exponential {
 
     static int recursiveExponential(int base, int exponent) {

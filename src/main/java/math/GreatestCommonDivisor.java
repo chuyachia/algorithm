@@ -1,3 +1,5 @@
+package math;
+
 public class GreatestCommonDivisor {
 
     static int gcd(int a, int b) {

@@ -1,3 +1,5 @@
+package math;
+
 public class FunctionRoot {
     // Newton's method for approximating differentiable function root
     @FunctionalInterface

@@ -1,3 +1,5 @@
+package math;
+
 public class Fibonacci {
 
     static int recursiveFibonacci(int n) {
@@ -12,14 +14,14 @@ public class Fibonacci {
     }
 
     public static void main(String[] args) {
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
         System.out.println(Fibonacci.iterativeFibonacci(1, 0, 40));
-        long endTime = System.currentTimeMillis();
+        long endTime = System.nanoTime();
         System.out.println(String.format("Iterative execution time : %s", endTime - startTime));
 
-        startTime = System.currentTimeMillis();
+        startTime = System.nanoTime();
         System.out.println(Fibonacci.recursiveFibonacci(40));
-        endTime = System.currentTimeMillis();
+        endTime = System.nanoTime();
         System.out.println(String.format("Recursive execution time : %s", endTime - startTime));
     }
 }

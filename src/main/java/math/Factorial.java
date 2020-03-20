@@ -1,3 +1,5 @@
+package math;
+
 public class Factorial {
 
     static int recursiveFactorial(int n) {

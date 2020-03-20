@@ -1,3 +1,5 @@
+package math;
+
 import java.util.Random;
 
 public class PrimalityTest {

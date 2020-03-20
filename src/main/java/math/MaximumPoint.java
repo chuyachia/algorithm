@@ -1,3 +1,5 @@
+package math;
+
 public class MaximumPoint {
 
     @FunctionalInterface
