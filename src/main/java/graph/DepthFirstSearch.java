@@ -7,8 +7,7 @@ import java.util.Stack;
 import java.util.function.Consumer;
 
 public class DepthFirstSearch {
-    private final List<List<Integer>> graph;
-    private  Stack<Integer> verticesStack  = new Stack<>();
+    private final List<List<Integer>> graph; // Adjacent list
     private boolean[] visited;
 
     public DepthFirstSearch(List<List<Integer>> graph) { // graph in adjacent list
@@ -17,22 +16,22 @@ public class DepthFirstSearch {
 
 
     public void iterativeSearch(Consumer<Integer> func) {
-        verticesStack.clear();
+        Stack<Integer> verticesStack = new Stack<>();
         visited = new boolean[graph.size()];
-        verticesStack.push(0); // start with any vertex
+        verticesStack.push(0);
+        visited[0] = true;
         while (!verticesStack.empty()) {
             Integer vertex = verticesStack.pop();
-            if (!visited[vertex]) {
-                List<Integer> edges = graph.get(vertex);
-                visited[vertex] = true;
-                for (Integer e : edges) {
-                    if (!visited[e]) {
-                        verticesStack.push(e);
-                    }
+            List<Integer> edges = graph.get(vertex);
+            visited[vertex] = true;
+            for (Integer e : edges) {
+                if (!visited[e]) {
+                    visited[e] = true;
+                    verticesStack.push(e);
                 }
-                // Do something with current vertex
-                func.accept(vertex);
             }
+            // Do something with current vertex
+            func.accept(vertex);
         }
     }
 
@@ -46,18 +45,21 @@ public class DepthFirstSearch {
         graph.add(Arrays.asList(1, 9));
         graph.add(Arrays.asList(0, 8));
         graph.add(Arrays.asList(3));
-        graph.add(Arrays.asList(2,4,5,7));
+        graph.add(Arrays.asList(2, 4, 5, 7));
         graph.add(Arrays.asList(3));
-        graph.add(Arrays.asList(3,6));
-        graph.add(Arrays.asList(5,7));
-        graph.add(Arrays.asList(3,8, 10, 11,6));
-        graph.add(Arrays.asList(1,9,7));
-        graph.add(Arrays.asList(0,8));
-        graph.add(Arrays.asList(7,11));
-        graph.add(Arrays.asList(7,10));
+        graph.add(Arrays.asList(3, 6));
+        graph.add(Arrays.asList(5, 7));
+        graph.add(Arrays.asList(3, 8, 10, 11, 6));
+        graph.add(Arrays.asList(1, 9, 7));
+        graph.add(Arrays.asList(0, 8));
+        graph.add(Arrays.asList(7, 11));
+        graph.add(Arrays.asList(7, 10));
 
         DepthFirstSearch dfs = new DepthFirstSearch(graph);
-        dfs.iterativeSearch(integer -> {System.out.println(integer);});
+        dfs.iterativeSearch(integer -> {
+            System.out.println(integer);
+        });
+
 //        dfs.recursiveSearch(integer -> {System.out.println(integer);});
     }
 
