@@ -7,70 +7,76 @@ import java.util.Stack;
 import java.util.function.Consumer;
 
 public class DepthFirstSearch {
-    private final List<List<Integer>> graph; // Adjacent list
+    private final List<List<Edge>> graph; // Adjacent list
     private boolean[] visited;
 
-    public DepthFirstSearch(List<List<Integer>> graph) { // graph in adjacent list
+    public DepthFirstSearch(List<List<Edge>> graph) { // graph in adjacent list
         this.graph = graph;
     }
 
 
-    public void iterativeSearch(Consumer<Integer> func) {
+    public void iterativeSearch(int start, Consumer<Integer> func) {
         Stack<Integer> verticesStack = new Stack<>();
         visited = new boolean[graph.size()];
-        verticesStack.push(0);
-        visited[0] = true;
+        visited[start] = true;
+        verticesStack.push(start);
         while (!verticesStack.empty()) {
             Integer vertex = verticesStack.pop();
-            List<Integer> edges = graph.get(vertex);
+            List<Edge> edges = graph.get(vertex);
             visited[vertex] = true;
-            for (Integer e : edges) {
-                if (!visited[e]) {
-                    visited[e] = true;
-                    verticesStack.push(e);
+            for (Edge e : edges) {
+                int toVertex = e.getVertex();
+                if (!visited[toVertex]) {
+                    visited[toVertex] = true;
+                    verticesStack.push(toVertex);
                 }
             }
-            // Do something with current vertex
+
             func.accept(vertex);
         }
     }
 
-    public void recursiveSearch(Consumer<Integer> func) {
-        visited = new boolean[graph.size()];
-        dfs(0, func);
+    public void recursiveSearch(int start, Consumer<Integer> func) {
+        recursiveSearch(start, func, new boolean[graph.size()]);
+    }
+
+    public void recursiveSearch(int start, Consumer<Integer> func, boolean[] visited) {
+        this.visited = visited;
+        dfs(start, func);
     }
 
     public static void main(String[] args) {
-        List<List<Integer>> graph = new ArrayList<>();
-        graph.add(Arrays.asList(1, 9));
-        graph.add(Arrays.asList(0, 8));
-        graph.add(Arrays.asList(3));
-        graph.add(Arrays.asList(2, 4, 5, 7));
-        graph.add(Arrays.asList(3));
-        graph.add(Arrays.asList(3, 6));
-        graph.add(Arrays.asList(5, 7));
-        graph.add(Arrays.asList(3, 8, 10, 11, 6));
-        graph.add(Arrays.asList(1, 9, 7));
-        graph.add(Arrays.asList(0, 8));
-        graph.add(Arrays.asList(7, 11));
-        graph.add(Arrays.asList(7, 10));
+        List<List<Edge>> graph = new ArrayList<>();
+        graph.add(Arrays.asList(new Edge(1,0), new Edge(9,0)));
+        graph.add(Arrays.asList(new Edge(0,0), new Edge(8,0)));
+        graph.add(Arrays.asList(new Edge(3,0)));
+        graph.add(Arrays.asList(new Edge(2,0), new Edge(4,0), new Edge(5,0), new Edge(7,0)));
+        graph.add(Arrays.asList(new Edge(3,0)));
+        graph.add(Arrays.asList(new Edge(3,0), new Edge(6,0)));
+        graph.add(Arrays.asList(new Edge(5,0), new Edge(7,0)));
+        graph.add(Arrays.asList(new Edge(3,0), new Edge(8,0), new Edge(10, 0), new Edge(11, 0), new Edge(6,0)));
+        graph.add(Arrays.asList(new Edge(1,0), new Edge(9,0), new Edge(7,0)));
+        graph.add(Arrays.asList(new Edge(0,0), new Edge(8,0)));
+        graph.add(Arrays.asList(new Edge(7,0), new Edge(11, 0)));
+        graph.add(Arrays.asList(new Edge(7,0), new Edge(10, 0)));
 
         DepthFirstSearch dfs = new DepthFirstSearch(graph);
-        dfs.iterativeSearch(integer -> {
-            System.out.println(integer);
-        });
+//        dfs.iterativeSearch(0, integer -> {
+//            System.out.println(integer);
+//        });
 
-//        dfs.recursiveSearch(integer -> {System.out.println(integer);});
+        dfs.recursiveSearch(0, integer -> {System.out.println(integer);});
     }
 
-    private void dfs(Integer vertex, Consumer<Integer> func) {
+    private void dfs(int vertex, Consumer<Integer> func) {
         if (!visited[vertex]) {
             visited[vertex] = true;
-            func.accept(vertex);
-            List<Integer> edges = graph.get(vertex);
-            for (Integer e : edges) {
-                dfs(e, func);
+            List<Edge> edges = graph.get(vertex);
+            for (Edge e : edges) {
+                int toVertex = e.getVertex();
+                dfs(toVertex, func);
             }
+            func.accept(vertex);
         }
     }
 
