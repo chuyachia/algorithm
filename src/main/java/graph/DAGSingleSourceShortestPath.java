@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SingleSourceShortestPath {
+public class DAGSingleSourceShortestPath {
     private final List<List<Edge>> graph;
     private final int[] distance;
     private final int[] path;
     private final boolean[] visited;
 
-    public SingleSourceShortestPath(List<List<Edge>> graph) {
+    public DAGSingleSourceShortestPath(List<List<Edge>> graph) {
         this.graph = graph;
         this.distance = new int[graph.size()];
         this.path = new int[graph.size()];
@@ -53,7 +53,7 @@ public class SingleSourceShortestPath {
         graph.add(Arrays.asList());
 
 
-        SingleSourceShortestPath sssp = new SingleSourceShortestPath(graph);
+        DAGSingleSourceShortestPath sssp = new DAGSingleSourceShortestPath(graph);
         List<Integer> path= sssp.shortestPath(0, 7);
         for (Integer p : path) {
             System.out.println(p);

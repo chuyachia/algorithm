@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.PriorityQueue;
 
+// TODO use indexed priority queue to efficiently update edge weight in queue instead of inserting new each time
 public class Dijkstra {
     private final List<List<Edge>> graph;
     private final int[] distance;
