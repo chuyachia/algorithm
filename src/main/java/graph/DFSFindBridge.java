@@ -3,12 +3,12 @@ package graph;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class DFSFindBridge {
     private final List<List<Integer>> graph;
     private final boolean[] visited;
     private final List<Bridge> bridges;
+    // Lowest reachable node id
     private final int[] lowLink;
 
     private static class Bridge {
@@ -30,7 +30,7 @@ public class DFSFindBridge {
         this.graph = graph;
         this.visited = new boolean[graph.size()];
         this.bridges = new LinkedList<>();
-        this.lowLink = IntStream.range(0, graph.size()).toArray();
+        this.lowLink = new int[graph.size()];
     }
 
     public List<Bridge> findBridge() {
@@ -42,6 +42,7 @@ public class DFSFindBridge {
     private void dfs(int currentNode, int parentNode) {
         if (!visited[currentNode]) {
             visited[currentNode] = true;
+            lowLink[currentNode] = currentNode;
             List<Integer> linkedNodes = graph.get(currentNode);
             for (Integer nextNode : linkedNodes) {
                 if (nextNode == parentNode) continue;
