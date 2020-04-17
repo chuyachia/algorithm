@@ -27,11 +27,7 @@ public class FordFulkerson {
     private final int sink;
     private EdgeCapacity[][] residualGraph;
     private double maxFlow;
-
     private boolean[] visited;
-    private int[] currentPath;
-    private boolean currentPathFound;
-    private double currentMinFlow;
 
     public FordFulkerson(double[][] graph, int source, int sink) {
         this.graph = graph;
@@ -40,7 +36,6 @@ public class FordFulkerson {
         this.n = graph.length;
         this.residualGraph = new EdgeCapacity[n][n];
         this.visited = new boolean[n];
-        this.currentPath = new int[n];
     }
 
     public static void main(String[] args) {
@@ -76,25 +71,17 @@ public class FordFulkerson {
     }
 
     private void searchPath() {
-        do {
-            resetCurrentPathState();
-
-            dfs(source);
-
-            if (currentPathFound) {
-                maxFlow += currentMinFlow;
-                updateFlowInPath();
-            }
-
-        } while (currentPathFound);
-
+        for (double flow = dfs(source, Double.POSITIVE_INFINITY); flow > 0; flow = dfs(source, Double.POSITIVE_INFINITY)){
+            Arrays.fill(visited, false);
+            maxFlow += flow;
+        }
     }
 
-    private void dfs(int currentNode) {
+    private double dfs(int currentNode, double inFlow) {
         visited[currentNode] = true;
+        // Sink reached
         if (currentNode == sink) {
-            currentPathFound = true;
-            return;
+            return inFlow;
         }
 
         EdgeCapacity[] edges = residualGraph[currentNode];
@@ -102,32 +89,20 @@ public class FordFulkerson {
         for (int i = 0; i < n; i++) {
             EdgeCapacity edge = edges[i];
             if (!visited[i] && edge != null && edge.remainingCapacity() > 0) {
-                dfs(i);
-                if (currentPathFound) {
-                    currentPath[currentNode] = i;
-                    currentMinFlow = Math.min(currentMinFlow, edge.remainingCapacity());
-                    return;
+                double outFlow = Math.min(inFlow, edge.remainingCapacity());
+
+                double nextOutFlow = dfs(i, outFlow);
+
+                if (nextOutFlow > 0) {
+                    addFlow(currentNode, i, nextOutFlow);
+                    addFlow(i, currentNode, -nextOutFlow);
+                    return nextOutFlow;
                 }
             }
         }
-    }
 
-    private void resetCurrentPathState() {
-        Arrays.fill(currentPath, -1);
-        Arrays.fill(visited, false);
-        currentPathFound = false;
-        currentMinFlow = Double.POSITIVE_INFINITY;
-    }
-
-    private void updateFlowInPath() {
-        int currentNode = source;
-        while (currentNode != sink) {
-            int nextNode = currentPath[currentNode];
-            if (nextNode == -1) break;
-            addFlow(currentNode, nextNode, currentMinFlow);
-            addFlow(nextNode, currentNode, -currentMinFlow);
-            currentNode = nextNode;
-        }
+        // No available out edge
+        return 0;
     }
 
     private void addFlow(int from, int to, double flow) {
