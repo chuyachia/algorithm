@@ -90,19 +90,9 @@ public class FloydWarshall {
         }
     }
 
-    public static double[][] emptyGraph(int n) {
-        double[][] graph = new double[n][n];
-        for (int i = 0; i < graph.length; i++) {
-            Arrays.fill(graph[i], Double.POSITIVE_INFINITY);
-            graph[i][i] = 0;
-        }
-
-        return graph;
-    }
-
     public static void main(String[] args) {
         // Graph without negative cycle
-        double[][] normalGraph = emptyGraph(4);
+        double[][] normalGraph = Util.emptyAdjacencyMatrix(4);
         normalGraph[0][2] = -2;
         normalGraph[1][0] = 4;
         normalGraph[1][2] = 3;
@@ -117,7 +107,7 @@ public class FloydWarshall {
         }
 
         // Graph with negative cycle
-        double[][] negativeCycleGraph = emptyGraph(7);
+        double[][] negativeCycleGraph = Util.emptyAdjacencyMatrix(7);
         negativeCycleGraph[0][1] = 1;
         negativeCycleGraph[0][2] = 1;
         negativeCycleGraph[1][3] = 4;

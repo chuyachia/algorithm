@@ -2,7 +2,6 @@ package graph;
 
 import math.Combination;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class TravellingSalesman {
@@ -18,18 +17,8 @@ public class TravellingSalesman {
         this.memo = new double[n][(int) Math.pow(2, n)];
     }
 
-    public static double[][] emptyGraph(int n) {
-        double[][] graph = new double[n][n];
-        for (int i = 0; i < graph.length; i++) {
-            Arrays.fill(graph[i], Double.POSITIVE_INFINITY);
-            graph[i][i] = 0;
-        }
-
-        return graph;
-    }
-
     public static void main(String[] args) {
-        double[][] graph = emptyGraph(6);
+        double[][] graph = Util.emptyAdjacencyMatrix(6);
         graph[5][0] = 10;
         graph[1][5] = 12;
         graph[4][1] = 2;
