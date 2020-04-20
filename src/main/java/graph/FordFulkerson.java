@@ -50,19 +50,26 @@ public class FordFulkerson {
     }
 
     public static void main(String[] args) {
-        List<Edge>[] graph = new List[11];
-        graph[0] = Arrays.asList(new Edge(1, 7), new Edge(2, 2), new Edge(3, 1));
-        graph[1] = Arrays.asList(new Edge(4, 2), new Edge(5, 4));
-        graph[2] = Arrays.asList(new Edge(5, 5), new Edge(6, 6));
-        graph[3] = Arrays.asList(new Edge(4, 4), new Edge(8, 8));
-        graph[4] = Arrays.asList(new Edge(7, 7), new Edge(8, 1));
-        graph[5] = Arrays.asList(new Edge(7, 3), new Edge(6, 8), new Edge(9, 3));
-        graph[6] = Arrays.asList(new Edge(9, 3));
-        graph[7] = Arrays.asList(new Edge(10, 1));
-        graph[8] = Arrays.asList(new Edge(10, 3));
-        graph[9] = Arrays.asList(new Edge(10, 4));
+//        List<Edge>[] graph = new List[11];
+//        graph[0] = Arrays.asList(new Edge(1, 7), new Edge(2, 2), new Edge(3, 1));
+//        graph[1] = Arrays.asList(new Edge(4, 2), new Edge(5, 4));
+//        graph[2] = Arrays.asList(new Edge(5, 5), new Edge(6, 6));
+//        graph[3] = Arrays.asList(new Edge(4, 4), new Edge(8, 8));
+//        graph[4] = Arrays.asList(new Edge(7, 7), new Edge(8, 1));
+//        graph[5] = Arrays.asList(new Edge(7, 3), new Edge(6, 8), new Edge(9, 3));
+//        graph[6] = Arrays.asList(new Edge(9, 3));
+//        graph[7] = Arrays.asList(new Edge(10, 1));
+//        graph[8] = Arrays.asList(new Edge(10, 3));
+//        graph[9] = Arrays.asList(new Edge(10, 4));
 
-        FordFulkerson fordFulkerson = new FordFulkerson(graph, 0, 10);
+        List<Edge>[] graph = new List[6];
+        graph[0] = Arrays.asList(new Edge(1,2), new Edge(2,4), new Edge(3,8));
+        graph[1] = Arrays.asList(new Edge(3,9));
+        graph[2] = Arrays.asList(new Edge(4,10));
+        graph[3] = Arrays.asList(new Edge(4,10), new Edge(2, 6));
+        graph[5] = Arrays.asList(new Edge(0,10), new Edge(1, 10));
+
+        FordFulkerson fordFulkerson = new FordFulkerson(graph, 5, 4);
         int maxFlow = fordFulkerson.computeMaxFlow();
         System.out.println(String.format("Max flow : %d", maxFlow));
     }
@@ -83,41 +90,37 @@ public class FordFulkerson {
     }
 
     private int bfs() {
-        LinkedList<EdgeCapacity> queue = new LinkedList<>();
+        LinkedList<Integer> queue = new LinkedList<>();
         int[] minFlow = new int[graph.length];
         EdgeCapacity[] linkedEdge = new EdgeCapacity[graph.length];
+
+        queue.add(source);
         minFlow[source] = Integer.MAX_VALUE;
         linkedEdge[source] = null;
         visited[source] = true;
 
-        for (EdgeCapacity nextEdge : residualGraph[source]) {
-            if (nextEdge.remainingCapacity() > 0) {
-                queue.add(nextEdge);
-            }
-        }
-
         while (queue.size() > 0) {
-            EdgeCapacity edge = queue.poll();
-            visited[edge.to] = true;
-            minFlow[edge.to] = Math.min(minFlow[edge.from], edge.remainingCapacity());
-            linkedEdge[edge.to] = edge;
+            Integer currentNode = queue.poll();
 
-            if (edge.to == sink) break;
+            if (currentNode == sink) break;
 
-            if (residualGraph[edge.to] == null) continue;
+            if (residualGraph[currentNode] == null) continue;
 
-            for (EdgeCapacity nextEdge : residualGraph[edge.to]) {
+            for (EdgeCapacity nextEdge : residualGraph[currentNode]) {
                 if (!visited[nextEdge.to] && nextEdge.remainingCapacity() > 0) {
-                    queue.add(nextEdge);
+                    minFlow[nextEdge.to] = Math.min(minFlow[currentNode], nextEdge.remainingCapacity());
+                    linkedEdge[nextEdge.to] = nextEdge;
+                    queue.add(nextEdge.to);
                     visited[nextEdge.to] = true;
                 }
             }
         }
 
-        EdgeCapacity currentTracedEdge = linkedEdge[sink];
-        while (currentTracedEdge != null) {
-            pushFlow(currentTracedEdge, minFlow[sink]);
-            currentTracedEdge = linkedEdge[currentTracedEdge.from];
+        // Update residual graph
+        EdgeCapacity currentUpdatingEdge= linkedEdge[sink];
+        while (currentUpdatingEdge != null) {
+            pushFlow(currentUpdatingEdge, minFlow[sink]);
+            currentUpdatingEdge = linkedEdge[currentUpdatingEdge.from];
         }
 
         return minFlow[sink];
