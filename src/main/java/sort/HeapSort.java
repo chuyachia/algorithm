@@ -12,10 +12,11 @@ public class HeapSort {
 
     public int[] sort() {
         heapEnd = sorted.length - 1;
+        heapify();
         while (heapEnd > 0) {
-            heapify();
             swap(0, heapEnd);
             heapEnd--;
+            sink(0);
         }
         return sorted;
     }
